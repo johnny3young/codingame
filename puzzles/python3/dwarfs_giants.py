@@ -1,54 +1,54 @@
-class Person():
-    def __init__(self, number):
-        self.number = number
-        self.depth = 1
-        self.dwarfs = set()
-
-    def add(self, dwarf):
-        if dwarf not in self.dwarfs:
-            self.dwarfs.add(dwarf)
-
-    def update_depths(self):
-        for dwarf in self.dwarfs:
-            if self.depth >= dwarf.depth:
-                dwarf.depth = self.depth + 1
-                dwarf.update_depths()
-
-    def __eq__(self, other):
-        return self.number == other.number
-
-    def __ne__(self, other):
-        return self.number != other.number
-
-    def __hash__(self):
-        return self.number
+from typing import Dict, Set
 
 
-persons = []
-# The number of people involved in the longest succession of influences
-max_depth = 0
-nb_relations = int(input())  # the number of relationships of influence
+class Node:
+    def __init__(self):
+        self.children: Set[int] = set()
+        self.depth = 0
 
-for i in range(nb_relations):
-    # a relationship of influence between two people
-    x, y = [int(j) for j in input().split()]
-    giant = Person(x)
-    dwarf = Person(y)
 
-    if giant in persons:
-        giant = persons[persons.index(giant)]
-    else:
-        persons.append(giant)
+class Graph:
+    def __init__(self):
+        self.nodes: Dict[int, Node] = {}  # node_id => node
 
-    if dwarf in persons:
-        dwarf = persons[persons.index(dwarf)]
-    else:
-        persons.append(dwarf)
+    def build(self):
+        nb_edges = int(input())  # the number of relationships of influence
+        for _ in range(nb_edges):
+            parent_id, child_id = map(int, input().split())
 
-    giant.add(dwarf)
-    giant.update_depths()
+            if child_id in self.nodes:
+                child: Node = self.nodes[child_id]
+            else:
+                child: Node = Node()
+                self.nodes[child_id] = child
 
-for person in persons:
-    max_depth = max(max_depth, person.depth)
+            if parent_id in self.nodes:
+                parent: Node = self.nodes[parent_id]
+                parent.children.add(child_id)
+            else:
+                parent: Node = Node()
+                parent.children.add(child_id)
+                self.nodes[parent_id] = parent
 
-print(max_depth)
+    def solve(self) -> int:
+        """Returns the number of people involved in the longest succession of influences."""
+        max_depth = 0
+        for node in self.nodes.values():
+            self.traverse(node)
+        for node in self.nodes.values():
+            if node.depth > max_depth:
+                max_depth = node.depth
+        return max_depth + 1
+
+    def traverse(self, node: Node):
+        for child_id in node.children:
+            child: Node = self.nodes[child_id]
+            if child.depth <= node.depth:
+                child.depth = node.depth + 1
+                self.traverse(child)
+
+
+if __name__ == "__main__":
+    graph = Graph()
+    graph.build()
+    print(graph.solve())

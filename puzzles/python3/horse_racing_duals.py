@@ -1,13 +1,18 @@
-strengths = []
-min_diff = 10000000
-n = int(input())
-for i in range(n):
-    strengths.append(int(input()))
+from typing import List
 
-strengths.sort()
 
-for i in range(n - 1):
-    diff = strengths[i + 1] - strengths[i]
-    min_diff = min(min_diff, diff)
+if __name__ == "__main__":
+    strengths: List[int] = []
+    min_diff = 10000000
+    n = int(input())
+    for _ in range(n):
+        strengths.append(int(input()))
 
-print(min_diff)
+    strengths.sort()
+
+    for i in range(n - 1):
+        diff = strengths[i + 1] - strengths[i]
+        if diff < min_diff:
+            min_diff = diff
+
+    print(min_diff)

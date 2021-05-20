@@ -1,33 +1,15 @@
-class Node:
-    def __init__(self, digit):
-        self.digit = digit
-        self.children = []
-
-    def index(self, digit):
-        for i, child in enumerate(self.children):
-            if child.digit == digit:
-                return i
-        return -1
-
-    def add_child(self, digit):
-        child = Node(digit)
-        self.children.append(child)
-
-
-nb_phones = int(input())
-nb_nodes = 0
-root = Node(-1)
-
-for i in range(nb_phones):
-    telephone = input()
-    current = root
-    for char in telephone:
-        digit = int(char)
-        i = current.index(digit)
-        if (i == -1):
-            current.add_child(digit)
-            nb_nodes += 1
-            i = current.index(digit)
-        current = current.children[i]
-
-print(nb_nodes)
+if __name__ == "__main__":
+    n = int(input())
+    trie: dict = {}
+    nb_elements = 0  # number of elements (referencing a number) stored in the structure
+    for _ in range(n):
+        phone_number = input()
+        current_node: dict = trie
+        for digit in phone_number:
+            if digit in current_node:
+                current_node = current_node[digit]
+            else:
+                current_node[digit] = {}
+                current_node = current_node[digit]
+                nb_elements += 1
+    print(nb_elements)

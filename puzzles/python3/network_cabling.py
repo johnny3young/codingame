@@ -1,26 +1,29 @@
-import math
+from typing import List
 
-min_x = 2 ** 30
-max_x = 0
-cable_size = 0  # main horizontal cable length
-coordinates = []
 
-nb_buildings = int(input())
-for i in range(nb_buildings):
-    x, y = [int(j) for j in input().split()]
-    coordinates.append(y)
-    if (x < min_x):
-        min_x = x
-    if (x > max_x):
-        max_x = x
+if __name__ == "__main__":
+    nb_buildings = int(input())
+    y_coordinates: List[int] = []
+    min_x = 2 ** 30
+    max_x = -2 ** 30
 
-coordinates.sort()
-cable_size = max_x - min_x
+    for _ in range(nb_buildings):
+        x, y = map(int, input().split())
+        y_coordinates.append(y)
+        if x < min_x:
+            min_x = x
+        if x > max_x:
+            max_x = x
 
-# To minimize the total vertical length of the cables,
-# the y value of the main cable must be the median of all the y values.
-median = coordinates[nb_buildings // 2]
-for i in range(nb_buildings):
-    cable_size += math.fabs(median - coordinates[i])
+    # length of horizontal cable
+    cable_length = max_x - min_x
 
-print(int(cable_size))
+    # calculate y median to minimize the length of vertical cable(s)
+    y_coordinates.sort()
+    y_median: int = y_coordinates[nb_buildings // 2]
+
+    # length of vertical cable(s)
+    for y in y_coordinates:
+        cable_length += abs(y_median - y)
+
+    print(cable_length)

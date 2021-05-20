@@ -1,13 +1,15 @@
-max_value = -1
-max_loss = 0
+if __name__ == "__main__":
+    max_value = 0
+    max_loss = 0
 
-nb_values = int(input())
-for i in input().split():
-    value = int(i)
-    if (value > max_value):
-        max_value = value
-    else:
-        loss = max_value - value
-        max_loss = max(max_loss, loss)
+    n = int(input())
+    for v in input().split():
+        value = int(v)
+        if value > max_value:
+            max_value = value
+        elif value < max_value:
+            loss = max_value - value
+            if loss > max_loss:
+                max_loss = loss
 
-print(-max_loss)
+    print(-max_loss)

@@ -1,4 +1,5 @@
 from collections import deque
+from typing import Deque, Dict, List
 
 
 LAND = '#'
@@ -7,7 +8,7 @@ DEFAULT_INDEX = -1
 
 
 class Node:
-    def __init__(self, x, y, terrain):
+    def __init__(self, x: int, y: int, terrain: str):
         self.x = x
         self.y = y
         self.terrain = terrain
@@ -16,14 +17,16 @@ class Node:
 
 class Grid:
     def __init__(self):
-        self.nodes = []
-        self.lakes = {}  # lake_index: surface area
+        self.width = 0
+        self.height = 0
+        self.nodes: List[List[Node]] = []
+        self.lakes: Dict[int, int] = {}  # lake_index: surface area
 
     def read_game_input(self):
         self.width = int(input())
         self.height = int(input())
         for y in range(self.height):
-            row = [Node(x, y, terrain) for x, terrain in enumerate(input())]
+            row: List[Node] = [Node(x, y, terrain) for x, terrain in enumerate(input())]
             self.nodes.append(row)
 
     def test(self):
@@ -32,7 +35,7 @@ class Grid:
             x, y = map(int, input().split())
             print(self.area(x, y))
 
-    def area(self, x, y):
+    def area(self, x: int, y: int) -> int:
         node = self.nodes[y][x]
         if node.terrain == LAND:
             return 0
@@ -40,8 +43,8 @@ class Grid:
             self.flood_fill(node)
         return self.lakes[node.lake_index]
 
-    def flood_fill(self, start):
-        queue = deque()
+    def flood_fill(self, start: Node):
+        queue: Deque[Node] = deque()
         total_area = 0
         start.lake_index = start.y * self.width + start.x
         queue.append(start)
@@ -69,12 +72,13 @@ class Grid:
             up_neighbor = self.nodes[node.y - 1][node.x]
             self.fill(queue, up_neighbor, lake_index)
 
-    def fill(self, queue, node, lake_index):
+    def fill(self, queue: Deque[Node], node: Node, lake_index: int):
         if node.terrain == WATER and node.lake_index == DEFAULT_INDEX:
             node.lake_index = lake_index
             queue.append(node)
 
 
-grid = Grid()
-grid.read_game_input()
-grid.test()
+if __name__ == "__main__":
+    grid = Grid()
+    grid.read_game_input()
+    grid.test()
